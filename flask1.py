@@ -22,7 +22,11 @@ def home():
 @app.route('/',methods=['POST'])
 def home1():
     if(request.method=='POST'):
-        return redirect("http://localhost:8888")
+        id=request.form['usr']
+        if(id.endswith('@in.ibm.com')):
+            return redirect("http://localhost:8888")
+        else:
+            return render_template('login.html',mess="Enter the correct w3id")
 @app.route('/parquet')
 def home2():
    return render_template('parquet.html')
