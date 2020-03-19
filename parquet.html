@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 align="center">PARQUET TO CSV </h1>
+<br>
+<script>
+function dynamicdropdown(listindex)
+    {
+        switch (listindex)
+        {
+        case "dimension"  :
+    
+            document.getElementById("name").options[0]=new Option("Select","");
+            document.getElementById("name").options[1]=new Option("CURRENCY_DIMENSION","CURRENCY_DIMENSION");
+            document.getElementById("name").options[2]=new Option("SOURCE_APPLICATION_DIMENSION","SOURCE_APPLICATION_DIMENSION");
+            document.getElementById("name").options[3]=new Option("CURRENCY_EXCHANGE_RATE_DIMENSION","CURRENCY_EXCHANGE_RATE_DIMENSION");
+            document.getElementById("name").options[4]=new Option("ENTITY_STATUS_HW_DIMENSION","ENTITY_STATUS_HW_DIMENSION");
+            document.getElementById("name").options[5]=new Option("ENTITY_STATUS_SVC_DIMENSION","ENTITY_STATUS_SVC_DIMENSION");
+            break;
+        case "fact":
+            document.getElementById("name").options[0]=new Option("Select","");
+            document.getElementById("name").options[1]=new Option("PRICING_QUOTE_HW_FACT","PRICING_QUOTE_HW_FACT");
+            document.getElementById("name").options[2]=new Option("PRICING_QUOTE_SVC_FACT","PRICING_QUOTE_SVC_FACT");
+            break;
+         }
+};
+</script>
+
+<table style="width:100%" border="5">
+    <tr>
+              <th>
+                 Bucket
+              </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Action
+                </th>
+
+    </tr>
+<tr>
+     <form method="post" name="aaa" action="">
+              <td align="center">
+                    <select id="bucket" name="bucket">
+                        <option value="select">Select</option>
+
+                      <option value="epm-pricing-staging">epm-pricing-staging</option>
+                      <option value="epm-pricing-dev">epm-pricing-dev</option>
+                    </select>
+              </td>
+
+                <td align="center">
+                     <select id="dim_or_fact_type" name="dim_or_fact_type" onchange="javascript: dynamicdropdown(this.options[this.selectedIndex].value);">
+                         <option value="select">Select</option>
+                         <option value="dimension">Dimension</option>
+                         <option value="fact">Fact</option>
+                    </select>
+
+                </td>
+                <td align="center">
+                    <select id="name" name="dim_or_fact_name">
+                        <option value="select">Select</option>
+                    </select>
+
+                </td>
+                <td align="center">
+                    <input type="submit" name="Convert" value="submit">
+                    <input type="reset" name="reset">
+                </td>
+    </form>
+    </tr>
+
+</table>
+{{message}}
+</body>
+</html>
+ 
