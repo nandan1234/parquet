@@ -58,16 +58,27 @@ def home3():
         desktop_path = str(Path.home())
         time_string = time.strftime("%Y_%m_%d-%H_%M_%S")
         dim_or_fact_folder_name = dim_or_fact_name.replace("/", "_")
-        
-        file_path = bucket + "/" + dim_or_fact_type + "/" + dim_or_fact_name + "/" + "transform.parquet"
-        print("Fetching parquet from cos path: " + file_path)
         destination_path = desktop_path + "/" + dim_or_fact_folder_name + "_" + time_string + ".csv"
-        print("The csv will be added to the path: " + destination_path)
-        
-        parquet_file = pq.ParquetDataset(file_path, filesystem=s3).read()
-        
-        df = parquet_file.to_pandas()
-        csv_data = df.to_csv(destination_path, date_format='%Y-%m-%dT%H:%M:%S', index=False)
+        df = pd.DataFrame(list())
+        df.to_csv(destination_path,date_format='%Y-%m-%dT%H:%M:%S', index=False)
+        if(dim_or_fact_type=="fact"):
+            df=pd.DataFrame()
+            Partition_Years=s3.ls(bucket + "/" + dim_or_fact_type + "/" + dim_or_fact_name)
+            df=pd.concat(
+                pq.ParquetDataset(j, filesystem=s3).read().to_pandas()
+                for i in range(1,len(Partition_Years)) for j in s3.ls(Partition_Years[i])
+                )
+            df.to_csv(destination_path,mode='a')      
+        else:    
+            file_path = bucket + "/" + dim_or_fact_type + "/" + dim_or_fact_name + "/" + "transform.parquet"
+            print("Fetching parquet from cos path: " + file_path)
+
+            print("The csv will be added to the path: " + destination_path)
+
+            parquet_file = pq.ParquetDataset(file_path, filesystem=s3).read()
+
+            df = parquet_file.to_pandas()
+            csv_data = df.to_csv(destination_path, date_format='%Y-%m-%dT%H:%M:%S', index=False)
 
     return render_template('parquet.html',message=mess)
 if __name__ == '__main__':
