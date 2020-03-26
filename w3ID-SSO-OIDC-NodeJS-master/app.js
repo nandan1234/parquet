@@ -35,7 +35,7 @@ https.createServer({
         key: fs.readFileSync('key.pem'),
         cert: fs.readFileSync('certificate.pem')
 }, app).listen(5000);
-
+var qs = require('querystring');
 // START OF CHANGE
 app.use(cookieParser());
 app.use(session({resave: 'true', saveUninitialized: 'true' , secret: 'keyboard cat'}));
@@ -78,7 +78,8 @@ var Strategy = new OpenIDConnectStrategy({
 
 passport.use(Strategy);
 
-app.get('/', ensureAuthenticated,function(req, res) {
+app.get('/',function(req, res) {
+	res.send('<head></head><div class="login"><center><h1>PARQUET TO CSV</h1><p></p><a href="/hello"><button type="submit">Sign in with your IBM w3ID</button></a><br/></div>');
 });
 
 app.get('/login', passport.authenticate('openidconnect', {}));
@@ -94,9 +95,10 @@ function ensureAuthenticated(req, res, next) {
 
 // handle callback, if authentication succeeds redirect to
 // original requested url, otherwise go to /failure
-app.get('/oidc_callback',function(req, res, next) {
+app.get('/oidc_rollback',function(req, res, next) {
 	
 	var redirect_url = req.session.originalUrl;
+	console.log(redirect_url);
 	passport.authenticate('openidconnect', {
 		successRedirect: redirect_url,
 		failureRedirect: '/failure',
@@ -106,21 +108,26 @@ app.get('/oidc_callback',function(req, res, next) {
 // failure page
 app.get('/failure', function(req, res) {
 	res.send('login failed'); });
-
-
+	
+app.get('/hello', ensureAuthenticated,function(req, res) {
+	res.redirect("http://localhost:5000/parquet");
+});
+app.get('/parquet',function(req, res) {
+	res.redirect("http://localhost:8000/");
+});
 // END OF CHANGE
 
 // serve the files out of ./public as our main files
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
 
 // get the app environment from Cloud Foundry
 // Comment out following line if running locally
- var appEnv = cfenv.getAppEnv();
+ //var appEnv = cfenv.getAppEnv();
 
 // start server on the specified port and binding host
 // Comment out following line if running locally
- app.listen(appEnv.port, function() {
+ //app.listen(appEnv.port, function() {
 
 // // print a message when the server starts listening
-   console.log("server starting on " + appEnv.url);
- });
+   //console.log("server starting on " + appEnv.url);
+// });
