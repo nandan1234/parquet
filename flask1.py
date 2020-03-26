@@ -17,21 +17,10 @@ import time
 app = Flask(__name__)
 mess=""
 @app.route('/')
-def home():
-   return render_template('login.html')
-@app.route('/',methods=['POST'])
 def home1():
-    if(request.method=='POST'):
-        id=request.form['usr']
-        if(id.endswith('@in.ibm.com')):
-            return redirect("http://localhost:8888")
-        else:
-            return render_template('login.html',mess="Enter the correct w3id")
-@app.route('/parquet')
-def home2():
    return render_template('parquet.html')
-@app.route('/parquet',methods=['POST'])
-def home3():
+@app.route('/',methods=['POST'])
+def home2():
     global user
     mess=""
     if request.method == 'POST':
@@ -79,7 +68,7 @@ def home3():
 
             df = parquet_file.to_pandas()
             csv_data = df.to_csv(destination_path, date_format='%Y-%m-%dT%H:%M:%S', index=False)
-
+            mess="Parquet Created"
     return render_template('parquet.html',message=mess)
 if __name__ == '__main__':
     app.run()
