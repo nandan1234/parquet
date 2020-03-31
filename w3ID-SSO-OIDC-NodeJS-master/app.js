@@ -110,10 +110,9 @@ app.get('/failure', function(req, res) {
 	res.send('login failed'); });
 	
 app.get('/hello', ensureAuthenticated,function(req, res) {
-	res.redirect("http://localhost:5000/parquet");
 });
 app.get('/parquet',function(req, res) {
-	res.redirect("http://localhost:8000/");
+	res.redirect("http://0.0.0.0:8080/");
 });
 // END OF CHANGE
 
